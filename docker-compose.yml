@@ -1,0 +1,21 @@
+# DeepSeek Cursor 代理 — 服务器部署
+# 用法:
+#   docker compose up -d --build
+#   宿主机端口可通过环境变量覆盖，例如: PROXY_PORT=8080 docker compose up -d
+services:
+  deepseek-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deepseek-cursor-proxy
+    restart: unless-stopped
+    ports:
+      - "${PROXY_PORT:-9000}:9000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    # API Key 由 Cursor 在请求头携带，无需在容器中配置
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
